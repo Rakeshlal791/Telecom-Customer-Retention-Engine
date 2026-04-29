@@ -21,9 +21,14 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
+          # Set identity so Git can create a commit
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "github-actions"
+
           # Create a new temporary branch with no history
           git checkout --orphan latest-branch
           git add -A
           git commit -m "Deploy latest version"
+          
           # Force push this single commit to Hugging Face
           git push --force https://stargazer791:$HF_TOKEN@huggingface.co/spaces/stargazer791/Customer-Retention-Engine latest-branch:main
