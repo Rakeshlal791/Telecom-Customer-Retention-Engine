@@ -4,6 +4,8 @@ This project builds a telecom churn prediction pipeline to identify customers at
 
 It compares logistic regression and XGBoost, applies class-imbalance handling, tunes the classification threshold with cross-validation, and saves a final model that can be used to score unseen customers.
 
+The project also includes a small local deployment setup: a FastAPI prediction API and a simple browser-based interface for scoring individual customers.
+
 ## Problem
 
 Customer churn is expensive because every preventable cancellation represents lost recurring revenue and higher reacquisition cost. The objective here is to identify likely churners early enough for a retention team to intervene.
@@ -117,6 +119,14 @@ Score the unlabeled test set:
 PYTHONPATH=src python3 predict.py
 ```
 
+Run the local API and web app:
+
+```bash
+PYTHONPATH=src uvicorn app:app --reload
+```
+
+Then open `http://127.0.0.1:8000` in your browser. The page sends customer inputs to `POST /predict` and displays churn probability and the predicted label.
+
 ## Outputs
 
 After training, the project writes local artifacts to:
@@ -129,8 +139,11 @@ After training, the project writes local artifacts to:
 - `reports/summary.md`
 - `reports/*_feature_importance.csv`
 
+The local deployment layer includes:
+
+- `app.py`: FastAPI app for health checks and prediction
+- `web/index.html`: simple browser UI for scoring one customer at a time
+
 ## Future Work
 
-- Add probability calibration analysis for decision support
-- Extend the project with cost-based retention targeting
-- Build a lightweight dashboard for interactive scoring and analysis
+- Add probability calibration analysis for decision support (right now we use best f1)

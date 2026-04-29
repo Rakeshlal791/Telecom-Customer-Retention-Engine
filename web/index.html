@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Churn Prediction</title>
+    <style>
+      :root {
+        --bg: #f4efe8;
+        --panel: #fffaf4;
+        --ink: #1f1c18;
+        --muted: #6c6259;
+        --accent: #0f766e;
+        --accent-2: #d97706;
+        --border: #d9cdbf;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        background:
+          radial-gradient(circle at top left, #fff8ee 0, transparent 30%),
+          linear-gradient(135deg, #f2eadf, #efe5d8 50%, #e8dccd);
+        color: var(--ink);
+      }
+
+      main {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 32px 20px 60px;
+      }
+
+      .hero {
+        margin-bottom: 28px;
+      }
+
+      .eyebrow {
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--accent);
+        font-size: 0.78rem;
+        margin-bottom: 8px;
+      }
+
+      h1 {
+        font-size: clamp(2.2rem, 5vw, 4.5rem);
+        line-height: 0.95;
+        margin: 0 0 12px;
+      }
+
+      .hero p {
+        max-width: 740px;
+        font-size: 1.05rem;
+        color: var(--muted);
+        margin: 0;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 24px;
+      }
+
+      .card {
+        background: rgba(255, 250, 244, 0.92);
+        border: 1px solid var(--border);
+        border-radius: 22px;
+        box-shadow: 0 18px 40px rgba(66, 42, 14, 0.08);
+      }
+
+      form.card {
+        padding: 22px;
+      }
+
+      .panel {
+        padding: 22px;
+        position: sticky;
+        top: 20px;
+        align-self: start;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .field.full {
+        grid-column: 1 / -1;
+      }
+
+      label {
+        font-size: 0.92rem;
+        color: var(--muted);
+      }
+
+      input,
+      select,
+      button {
+        width: 100%;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        padding: 12px 14px;
+        font: inherit;
+        background: #fffdf9;
+        color: var(--ink);
+      }
+
+      button {
+        border: 0;
+        background: linear-gradient(135deg, var(--accent), #115e59);
+        color: white;
+        font-weight: 700;
+        cursor: pointer;
+        margin-top: 8px;
+      }
+
+      button:hover {
+        filter: brightness(1.05);
+      }
+
+      .status {
+        font-size: 0.9rem;
+        color: var(--muted);
+        min-height: 1.4em;
+      }
+
+      .metric {
+        margin: 16px 0;
+        padding: 16px;
+        border-radius: 16px;
+        background: linear-gradient(180deg, #fff, #f7efe4);
+        border: 1px solid var(--border);
+      }
+
+      .metric-label {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--muted);
+      }
+
+      .metric-value {
+        font-size: 2.6rem;
+        margin-top: 4px;
+      }
+
+      .label-pill {
+        display: inline-block;
+        padding: 8px 12px;
+        border-radius: 999px;
+        font-weight: 700;
+        margin-top: 10px;
+      }
+
+      .label-yes {
+        background: rgba(217, 119, 6, 0.14);
+        color: #92400e;
+      }
+
+      .label-no {
+        background: rgba(15, 118, 110, 0.14);
+        color: #0f766e;
+      }
+
+      .small-note {
+        color: var(--muted);
+        font-size: 0.92rem;
+        line-height: 1.5;
+      }
+
+      @media (max-width: 860px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+
+        .panel {
+          position: static;
+        }
+
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="hero">
+        <div class="eyebrow">Local Demo</div>
+        <h1>Churn Prediction</h1>
+        <p>
+          Enter one customer's profile and service details to estimate churn probability
+          with the trained XGBoost model.
+        </p>
+      </section>
+
+      <section class="layout">
+        <form id="prediction-form" class="card">
+          <div class="grid">
+            <div class="field">
+              <label for="gender">Gender</label>
+              <select id="gender" name="gender">
+                <option>Male</option>
+                <option>Female</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="SeniorCitizen">Senior Citizen</label>
+              <select id="SeniorCitizen" name="SeniorCitizen">
+                <option>No</option>
+                <option>Yes</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="Partner">Partner</label>
+              <select id="Partner" name="Partner">
+                <option>Yes</option>
+                <option>No</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="Dependents">Dependents</label>
+              <select id="Dependents" name="Dependents">
+                <option>No</option>
+                <option>Yes</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="tenure">Tenure</label>
+              <input id="tenure" name="tenure" type="number" min="0" max="72" value="12" />
+            </div>
+
+            <div class="field">
+              <label for="PhoneService">Phone Service</label>
+              <select id="PhoneService" name="PhoneService">
+                <option>Yes</option>
+                <option>No</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="MultipleLines">Multiple Lines</label>
+              <select id="MultipleLines" name="MultipleLines">
+                <option>No</option>
+                <option>Yes</option>
+                <option>No phone service</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="InternetService">Internet Service</label>
+              <select id="InternetService" name="InternetService">
+                <option>Fiber optic</option>
+                <option>DSL</option>
+                <option>No</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="OnlineSecurity">Online Security</label>
+              <select id="OnlineSecurity" name="OnlineSecurity">
+                <option>No</option>
+                <option>Yes</option>
+                <option>No internet service</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="OnlineBackup">Online Backup</label>
+              <select id="OnlineBackup" name="OnlineBackup">
+                <option>No</option>
+                <option>Yes</option>
+                <option>No internet service</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="DeviceProtection">Device Protection</label>
+              <select id="DeviceProtection" name="DeviceProtection">
+                <option>No</option>
+                <option>Yes</option>
+                <option>No internet service</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="TechSupport">Tech Support</label>
+              <select id="TechSupport" name="TechSupport">
+                <option>No</option>
+                <option>Yes</option>
+                <option>No internet service</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="StreamingTV">Streaming TV</label>
+              <select id="StreamingTV" name="StreamingTV">
+                <option>No</option>
+                <option>Yes</option>
+                <option>No internet service</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="StreamingMovies">Streaming Movies</label>
+              <select id="StreamingMovies" name="StreamingMovies">
+                <option>No</option>
+                <option>Yes</option>
+                <option>No internet service</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="Contract">Contract</label>
+              <select id="Contract" name="Contract">
+                <option>Month-to-month</option>
+                <option>One year</option>
+                <option>Two year</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="PaperlessBilling">Paperless Billing</label>
+              <select id="PaperlessBilling" name="PaperlessBilling">
+                <option>Yes</option>
+                <option>No</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="PaymentMethod">Payment Method</label>
+              <select id="PaymentMethod" name="PaymentMethod">
+                <option>Electronic check</option>
+                <option>Mailed check</option>
+                <option>Bank transfer (automatic)</option>
+                <option>Credit card (automatic)</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="MonthlyCharges">Monthly Charges</label>
+              <input id="MonthlyCharges" name="MonthlyCharges" type="number" min="0" step="0.01" value="89.5" />
+            </div>
+
+            <div class="field full">
+              <label for="TotalCharges">Total Charges</label>
+              <input id="TotalCharges" name="TotalCharges" type="number" min="0" step="0.01" value="1074.0" />
+            </div>
+          </div>
+
+          <button type="submit">Predict Churn</button>
+          <p class="status" id="status"></p>
+        </form>
+
+        <aside class="card panel">
+          <div class="small-note">Prediction Result</div>
+          <div class="metric">
+            <div class="metric-label">Churn Probability</div>
+            <div class="metric-value" id="probability">--</div>
+          </div>
+          <div class="small-note">
+            The API returns the tuned model probability and the final thresholded label.
+          </div>
+          <div id="label-pill" class="label-pill label-no">Awaiting input</div>
+        </aside>
+      </section>
+    </main>
+
+    <script>
+      const form = document.getElementById("prediction-form");
+      const statusText = document.getElementById("status");
+      const probabilityText = document.getElementById("probability");
+      const labelPill = document.getElementById("label-pill");
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        statusText.textContent = "Scoring customer...";
+
+        const formData = new FormData(form);
+        const payload = Object.fromEntries(formData.entries());
+        payload.tenure = Number(payload.tenure);
+        payload.MonthlyCharges = Number(payload.MonthlyCharges);
+        payload.TotalCharges = Number(payload.TotalCharges);
+
+        try {
+          const response = await fetch("/predict", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+          });
+
+          if (!response.ok) {
+            const errorPayload = await response.json();
+            throw new Error(errorPayload.detail || "Prediction failed.");
+          }
+
+          const result = await response.json();
+          probabilityText.textContent = `${(result.churn_probability * 100).toFixed(1)}%`;
+          labelPill.textContent = `Predicted churn: ${result.predicted_churn_label}`;
+          labelPill.className =
+            result.predicted_churn_label === "Yes"
+              ? "label-pill label-yes"
+              : "label-pill label-no";
+          statusText.textContent = "Prediction complete.";
+        } catch (error) {
+          statusText.textContent = error.message;
+        }
+      });
+    </script>
+  </body>
+</html>
