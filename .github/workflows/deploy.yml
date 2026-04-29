@@ -21,14 +21,9 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          # Set identity so Git can create a commit
-          git config --global user.email "github-actions@github.com"
-          git config --global user.name "github-actions"
-
-          # Create a new temporary branch with no history
-          git checkout --orphan latest-branch
-          git add -A
-          git commit -m "Deploy latest version"
+          # 1. Install the Hugging Face CLI
+          pip install huggingface_hub
           
-          # Force push this single commit to Hugging Face
-          git push --force https://stargazer791:$HF_TOKEN@huggingface.co/spaces/stargazer791/Customer-Retention-Engine latest-branch:main
+          # 2. Upload the entire project using the HF CLI
+          # This tool handles binary files perfectly without needing Git LFS manually
+          huggingface-cli upload stargazer791/Customer-Retention-Engine . . --repo-type=space --token $HF_TOKEN --commit-message "Deploy via GitHub Action"
