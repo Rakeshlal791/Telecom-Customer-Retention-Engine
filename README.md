@@ -19,8 +19,8 @@ It compares Logistic Regression and XGBoost, applies class-imbalance handling, t
 The project includes a **FastAPI prediction API** and an interactive browser-based interface for scoring individual customers, deployed with **Docker and CI/CD**.
 
 It also contains deep EDA with insights:
-1. [EDA_High_payers_analysis.ipynb](file:///home/rakesh/Programs/churn_predict2/EDA_High_payers_analysis.ipynb)
-2. [EDA_SeniorCitizens.ipynb](file:///home/rakesh/Programs/churn_predict2/EDA_SeniorCitizens.ipynb)
+1. [EDA_High_payers_analysis.ipynb](./EDA_High_payers_analysis.ipynb)
+2. [EDA_SeniorCitizens.ipynb](./EDA_SeniorCitizens.ipynb)
 
 ## Problem
 
