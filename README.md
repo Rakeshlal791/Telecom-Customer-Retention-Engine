@@ -1,10 +1,16 @@
-# Customer Churn Prediction
+# Customer Retention Engine: Telecom Churn Prediction
+
+[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge&logo=huggingface)](https://huggingface.co/spaces/stargazer791/Churn-prediction)
 
 This project builds a telecom churn prediction pipeline to identify customers at high risk of leaving, using demographic, service, contract, and billing data to support retention targeting.
 
-It compares logistic regression and XGBoost, applies class-imbalance handling, tunes the classification threshold with cross-validation, and saves a final model that can be used to score unseen customers.
+It compares Logistic Regression and XGBoost, applies class-imbalance handling, tunes the classification threshold with **5-Fold Stratified Cross-Validation**, and saves a final model that can be used to score unseen customers.
 
-The project also includes a small local deployment setup: a FastAPI prediction API and a simple browser-based interface for scoring individual customers.
+The project includes a **FastAPI prediction API** and an interactive browser-based interface for scoring individual customers, deployed with **Docker and CI/CD**.
+
+It also contains deep EDA with insights:
+1. [EDA_High_payers_analysis.ipynb](file:///home/rakesh/Programs/churn_predict2/EDA_High_payers_analysis.ipynb)
+2. [EDA_SeniorCitizens.ipynb](file:///home/rakesh/Programs/churn_predict2/EDA_SeniorCitizens.ipynb)
 
 ## Problem
 
@@ -60,7 +66,7 @@ Evaluation design:
 
 1. Split labeled data into development and holdout sets using stratified sampling
 2. Train each model on the development set
-3. Tune the probability threshold with internal cross-validation on the development set
+3. Tune the probability threshold with internal cross-validation (5-Fold) on the development set
 4. Report final holdout metrics: F1, precision, recall, accuracy, ROC-AUC, and PR-AUC
 5. Retrain the winning model on all labeled rows
 6. Save the final full-data model artifact
