@@ -1,3 +1,13 @@
+---
+title: Customer Retention Engine
+emoji: 📈
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+pinned: false
+---
+
+
 # Customer Retention Engine: Telecom Churn Prediction
 
 [![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge&logo=huggingface)](https://huggingface.co/spaces/stargazer791/Customer-Retention-Engine)
