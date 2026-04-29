@@ -1,6 +1,6 @@
 # Customer Retention Engine: Telecom Churn Prediction
 
-[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge&logo=huggingface)](https://huggingface.co/spaces/stargazer791/Churn-prediction)
+[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge&logo=huggingface)](https://huggingface.co/spaces/stargazer791/Customer-Retention-Engine)
 
 This project builds a telecom churn prediction pipeline to identify customers at high risk of leaving, using demographic, service, contract, and billing data to support retention targeting.
 
